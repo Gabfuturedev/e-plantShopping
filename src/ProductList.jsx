@@ -11,6 +11,10 @@ function ProductList({ onHomeClick }) {
   const dispatch = useDispatch();
   const cartItems = useSelector(state => state.cart.items);
 
+  const calculateTotalQuantity = () => {
+    return cartItems ? cartItems.reduce((total, item) => total + item.quantity, 0) : 0;
+  };
+
   const handleAddToCart = (product) => {
     dispatch(addItem(product));
     setAddedToCart((prevState) => ({
@@ -349,7 +353,7 @@ function ProductList({ onHomeClick }) {
                     id="mainIconPathAttribute"
                   ></path>
                 </svg>
-                <span className="cart_quantity_count">{cartItems.reduce((total, item) => total + item.quantity, 0)}</span>
+                <span className="cart_quantity_count">{calculateTotalQuantity()}</span>
               </h1>
             </a>
           </div>
@@ -376,6 +380,7 @@ function ProductList({ onHomeClick }) {
                     <button
                       className={`product-button ${addedToCart[plant.name] ? "added-to-cart" : ""}`}
                       onClick={() => handleAddToCart(plant)}
+                      disabled={!!addedToCart[plant.name]}
                     >
                       {addedToCart[plant.name]
                         ? "Added to Cart"
