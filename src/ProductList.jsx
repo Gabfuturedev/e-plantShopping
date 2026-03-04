@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { addItem } from "./CartSlice";
 import "./ProductList.css";
 import CartItem from "./CartItem";
@@ -9,6 +9,7 @@ function ProductList({ onHomeClick }) {
   // add to cart functionality
   const [addedToCart, setAddedToCart] = useState({});
   const dispatch = useDispatch();
+  const cartItems = useSelector(state => state.cart.items);
 
   const handleAddToCart = (product) => {
     dispatch(addItem(product));
@@ -348,6 +349,7 @@ function ProductList({ onHomeClick }) {
                     id="mainIconPathAttribute"
                   ></path>
                 </svg>
+                <span className="cart_quantity_count">{cartItems.reduce((total, item) => total + item.quantity, 0)}</span>
               </h1>
             </a>
           </div>
@@ -363,7 +365,11 @@ function ProductList({ onHomeClick }) {
               <div className="product-list">
                 {categoryObj.plants.map((plant) => (
                   <div key={plant.name} className="product-card">
-                    <img src={plant.image} alt={plant.name} className="product-image" />
+                    <img
+                      src={plant.image}
+                      alt={plant.name}
+                      className="product-image"
+                    />
                     <h3 className="product-title">{plant.name}</h3>
                     <p>{plant.description}</p>
                     <p className="product-price">{plant.cost}</p>
@@ -371,7 +377,9 @@ function ProductList({ onHomeClick }) {
                       className={`product-button ${addedToCart[plant.name] ? "added-to-cart" : ""}`}
                       onClick={() => handleAddToCart(plant)}
                     >
-                      {addedToCart[plant.name] ? "Added to Cart" : "Add to Cart"}
+                      {addedToCart[plant.name]
+                        ? "Added to Cart"
+                        : "Add to Cart"}
                     </button>
                   </div>
                 ))}
